@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExtensionManifest Version="7.0"
+    ExtensionBundleId="com.safemove.panel"
+    ExtensionBundleVersion="1.0.0"
+    ExtensionBundleName="SAFE MOVE">
+    <ExtensionList>
+        <Extension Id="com.safemove.panel.main"/>
+    </ExtensionList>
+    <ExecutionEnvironment>
+        <HostList>
+            <!-- ILST = Illustrator -->
+            <Host Name="ILST" Version="[23.0,99.9]"/>
+        </HostList>
+        <LocaleList>
+            <Locale Code="All"/>
+        </LocaleList>
+        <RequiredRuntimeList>
+            <RequiredRuntime Name="CSXS" Version="10.0"/>
+        </RequiredRuntimeList>
+    </ExecutionEnvironment>
+    <DispatchInfoList>
+        <Extension Id="com.safemove.panel.main">
+            <DispatchInfo>
+                <Resources>
+                    <MainPath>./client/index.html</MainPath>
+                    <CEFCommandLine>
+                        <Parameter>--enable-nodejs</Parameter>
+                    </CEFCommandLine>
+                </Resources>
+                <Lifecycle>
+                    <AutoVisible>true</AutoVisible>
+                </Lifecycle>
+                <UI>
+                    <Type>Panel</Type>
+                    <Menu>SAFE MOVE</Menu>
+                    <Geometry>
+                        <Size>
+                            <Width>380</Width>
+                            <Height>800</Height>
+                        </Size>
+                        <MinSize>
+                            <Width>360</Width>
+                            <Height>500</Height>
+                        </MinSize>
+                        <MaxSize>
+                            <Width>800</Width>
+                            <Height>2000</Height>
+                        </MaxSize>
+                    </Geometry>
+                </UI>
+            </DispatchInfo>
+        </Extension>
+    </DispatchInfoList>
+</ExtensionManifest>
