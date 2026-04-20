@@ -339,7 +339,7 @@ function showUpdateBanner(info) {
 }
 
 function checkForUpdates() {
-  var url = "https://raw.githubusercontent.com/NgocDiep01112001/safe-move-plugin/main/version.json";
+  var url = "https://raw.githubusercontent.com/DiEp2001/safe-move-plugin/main/version.json";
 
   fetch(url + "?t=" + Date.now())
     .then(function (res) {
