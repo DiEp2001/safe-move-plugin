@@ -1,312 +1,137 @@
-var resultBox = document.getElementById("resultBox");
-var resultMode = document.getElementById("resultMode");
-var statusBadge = document.getElementById("statusBadge");
+var appView = document.getElementById("appView");
 
-function getEl(id) {
-  return document.getElementById(id);
+function getToolHtmlPath(toolName) {
+  return "./tools/" + toolName + "/" + toolName + ".html";
 }
 
-function clampCMYKValue(value) {
-  if (value === "" || value === null || value === undefined) return "";
-
-  var n = parseFloat(value);
-  if (isNaN(n)) return "";
-
-  if (n < 0) n = 0;
-  if (n > 100) n = 100;
-
-  return String(parseFloat(n.toFixed(2)));
+function getToolCssPath(toolName) {
+  return "./tools/" + toolName + "/" + toolName + ".css";
 }
 
-function attachClampInput(id) {
-  var el = getEl(id);
-  if (!el) return;
+function getToolJsPath(toolName) {
+  return "./tools/" + toolName + "/" + toolName + ".js";
+}
 
-  el.addEventListener("input", function () {
-    var value = el.value;
-    if (value === "") return;
+function removeOldToolCss() {
+  var old = document.getElementById("dynamic-tool-css");
+  if (old) old.remove();
+}
 
-    var n = parseFloat(value);
-    if (isNaN(n)) {
-      el.value = "";
-      return;
-    }
+function removeOldToolJs() {
+  var old = document.getElementById("dynamic-tool-js");
+  if (old) old.remove();
+}
 
-    if (n < 0) {
-      el.value = "0";
-      return;
-    }
+function loadToolCss(toolName) {
+  removeOldToolCss();
 
-    if (n > 100) {
-      el.value = "100";
-      return;
-    }
+  var link = document.createElement("link");
+  link.id = "dynamic-tool-css";
+  link.rel = "stylesheet";
+  link.href = getToolCssPath(toolName) + "?t=" + Date.now();
+  document.head.appendChild(link);
+}
+
+function loadToolJs(toolName) {
+  return new Promise(function (resolve, reject) {
+    removeOldToolJs();
+
+    var script = document.createElement("script");
+    script.id = "dynamic-tool-js";
+    script.src = getToolJsPath(toolName) + "?t=" + Date.now();
+    script.onload = function () {
+      resolve();
+    };
+    script.onerror = function () {
+      reject(new Error("Không load được JS của tool: " + toolName));
+    };
+    document.body.appendChild(script);
   });
-
-  el.addEventListener("blur", function () {
-    el.value = clampCMYKValue(el.value);
-  });
 }
 
-function getNumber(id) {
-  var el = getEl(id);
-  if (!el) return 0;
+function renderHome() {
+  appView.innerHTML = `
+    <section class="hero">
+      <div class="hero-top">
+        <div class="brand">
+          <div class="brand-dot"></div>
+          <div>
+            <div class="brand-name">TOOL ILLUSTRATOR</div>
+            <div class="brand-sub">Internal tools panel</div>
+          </div>
+        </div>
+      </div>
 
-  var val = el.value;
-  if (val === "" || val === null) return 0;
+      <div class="hero-banner">
+        <div class="hero-overlay">
+          <div class="hero-title">Tool Illustrator</div>
+          <div class="hero-desc">
+            Chọn chức năng để mở công cụ tương ứng.
+          </div>
+        </div>
+      </div>
+    </section>
 
-  var n = parseFloat(val);
-  if (isNaN(n)) return 0;
-  if (n < 0) n = 0;
-  if (n > 100) n = 100;
+    <section class="tool-card">
+      <div class="tool-title">TOOLS</div>
 
-  return n;
-}
+      <div class="tool-menu">
+        <button id="openSafeMoveBtn" class="menu-tool-btn">
+          <div class="menu-tool-title">Safe Move</div>
+          <div class="menu-tool-desc">Preview và move object theo màu sang Die Cut / Dimension</div>
+        </button>
 
-function getExcludeList(id) {
-  var el = getEl(id);
-  var text = el ? (el.value || "") : "";
-  var lines = text.split(/\r?\n/);
-  var arr = [];
+        <button class="menu-tool-btn disabled" disabled>
+          <div class="menu-tool-title">Color Scan</div>
+          <div class="menu-tool-desc">Sắp thêm</div>
+        </button>
 
-  for (var i = 0; i < lines.length; i++) {
-    var t = String(lines[i]).replace(/^\s+|\s+$/g, "");
-    if (t) arr.push(t);
-  }
+        <button class="menu-tool-btn disabled" disabled>
+          <div class="menu-tool-title">Layer Utility</div>
+          <div class="menu-tool-desc">Sắp thêm</div>
+        </button>
+      </div>
+    </section>
+  `;
 
-  return arr;
-}
-
-function buildRule(prefix) {
-  return {
-    fill: {
-      c: getNumber(prefix + "FillC"),
-      m: getNumber(prefix + "FillM"),
-      y: getNumber(prefix + "FillY"),
-      k: getNumber(prefix + "FillK")
-    },
-    stroke: {
-      c: getNumber(prefix + "StrokeC"),
-      m: getNumber(prefix + "StrokeM"),
-      y: getNumber(prefix + "StrokeY"),
-      k: getNumber(prefix + "StrokeK")
-    },
-    spot: getEl(prefix + "Spot").checked,
-    pantone: getEl(prefix + "Pantone").checked,
-    excludeList: getExcludeList(prefix + "Exclude"),
-    tolerance: 0.2
-  };
-}
-
-function buildPayload(mode, previewTarget) {
-  return {
-    mode: mode,
-    previewTarget: previewTarget || "all",
-    dieRule: buildRule("die"),
-    dimRule: buildRule("dim"),
-    dieLayerName: "Die Cut",
-    dimLayerName: "Dimension",
-    showDieLayer: getEl("showDieLayer").checked,
-    showDimLayer: getEl("showDimLayer").checked
-  };
-}
-
-function setStatus(type, text) {
-  statusBadge.className = "status-badge " + type;
-  statusBadge.textContent = text;
-}
-
-function escapeHtml(text) {
-  return String(text)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-}
-
-function setResultLines(lines) {
-  var html = "";
-
-  for (var i = 0; i < lines.length; i++) {
-    var line = lines[i];
-    html += '<div class="result-line ' + (line.type || "") + '">' + escapeHtml(line.text) + '</div>';
-  }
-
-  resultBox.innerHTML = html;
-}
-
-function renderSuccess(result) {
-  var lines = [];
-
-  if (result.mode === "move") {
-    lines.push({ type: "success", text: "✔ Move thành công" });
-  } else if (result.previewTarget === "die") {
-    lines.push({ type: "success", text: "✔ Preview Die Cut thành công" });
-  } else if (result.previewTarget === "dim") {
-    lines.push({ type: "success", text: "✔ Preview Dimension thành công" });
-  } else {
-    lines.push({ type: "success", text: "✔ Preview thành công" });
-  }
-
-  if (typeof result.dieCount !== "undefined") {
-    lines.push({ type: "info", text: "Die Cut: " + (result.dieCount || 0) + " objects" });
-  }
-
-  if (typeof result.dimCount !== "undefined") {
-    lines.push({ type: "info", text: "Dimension: " + (result.dimCount || 0) + " objects" });
-  }
-
-  if (typeof result.selectedCount !== "undefined") {
-    lines.push({ type: "info", text: "Selected: " + result.selectedCount + " objects" });
-  }
-
-  if (result.document) {
-    lines.push({ type: "muted", text: "Document: " + result.document });
-  }
-
-  if (result.message) {
-    lines.push({ type: "muted", text: result.message });
-  }
-
-  setResultLines(lines);
-}
-
-function renderError(message) {
-  setResultLines([
-    { type: "error", text: "✖ Có lỗi xảy ra" },
-    { type: "muted", text: message || "Unknown error" }
-  ]);
-}
-
-async function runPreviewTarget(target) {
-  try {
-    setStatus("running", "Running");
-
-    if (target === "die") {
-      resultMode.textContent = "Preview Die";
-      setResultLines([{ type: "muted", text: "Đang highlight Die Cut..." }]);
-    } else if (target === "dim") {
-      resultMode.textContent = "Preview Dim";
-      setResultLines([{ type: "muted", text: "Đang highlight Dimension..." }]);
-    } else {
-      resultMode.textContent = "Preview";
-      setResultLines([{ type: "muted", text: "Đang highlight..." }]);
-    }
-
-    var payload = buildPayload("preview", target);
-    var result = await runPreview(payload);
-
-    if (result && result.status === "ok") {
-      setStatus("success", "Success");
-      renderSuccess(result);
-    } else {
-      setStatus("error", "Error");
-      renderError(result && result.message ? result.message : "Preview failed");
-    }
-  } catch (e) {
-    setStatus("error", "Error");
-    renderError(String(e));
-  }
-}
-
-async function onMove() {
-  try {
-    setStatus("running", "Running");
-    resultMode.textContent = "Move";
-    setResultLines([{ type: "muted", text: "Đang move object..." }]);
-
-    var payload = buildPayload("move", "all");
-    var result = await runMove(payload);
-
-    if (result && result.status === "ok") {
-      setStatus("success", "Success");
-      renderSuccess(result);
-    } else {
-      setStatus("error", "Error");
-      renderError(result && result.message ? result.message : "Move failed");
-    }
-  } catch (e) {
-    setStatus("error", "Error");
-    renderError(String(e));
-  }
-}
-
-function clearInput(id) {
-  var el = getEl(id);
-  if (el) el.value = "";
-}
-
-function onReset() {
-  var ids = [
-    "dieFillC","dieFillM","dieFillY","dieFillK",
-    "dieStrokeC","dieStrokeM","dieStrokeY","dieStrokeK",
-    "dimFillC","dimFillM","dimFillY","dimFillK",
-    "dimStrokeC","dimStrokeM","dimStrokeY","dimStrokeK"
-  ];
-
-  for (var i = 0; i < ids.length; i++) {
-    clearInput(ids[i]);
-  }
-
-  getEl("dieSpot").checked = false;
-  getEl("diePantone").checked = false;
-  getEl("showDieLayer").checked = true;
-  getEl("dieExclude").value = "";
-
-  getEl("dimSpot").checked = false;
-  getEl("dimPantone").checked = false;
-  getEl("showDimLayer").checked = true;
-  getEl("dimExclude").value = "";
-
-  resultMode.textContent = "Idle";
-  setStatus("ready", "Ready");
-  setResultLines([{ type: "muted", text: "Đã reset UI." }]);
-}
-
-function initClampInputs() {
-  var ids = [
-    "dieFillC","dieFillM","dieFillY","dieFillK",
-    "dieStrokeC","dieStrokeM","dieStrokeY","dieStrokeK",
-    "dimFillC","dimFillM","dimFillY","dimFillK",
-    "dimStrokeC","dimStrokeM","dimStrokeY","dimStrokeK"
-  ];
-
-  for (var i = 0; i < ids.length; i++) {
-    attachClampInput(ids[i]);
-  }
-}
-
-function initEvents() {
-  var previewDieBtn = getEl("previewDieBtn");
-  var previewDimBtn = getEl("previewDimBtn");
-  var moveBtn = getEl("moveBtn");
-  var resetBtn = getEl("resetBtn");
-
-  if (previewDieBtn) {
-    previewDieBtn.addEventListener("click", function () {
-      runPreviewTarget("die");
+  var openSafeMoveBtn = document.getElementById("openSafeMoveBtn");
+  if (openSafeMoveBtn) {
+    openSafeMoveBtn.addEventListener("click", function () {
+      openTool("safe-move");
     });
   }
+}
 
-  if (previewDimBtn) {
-    previewDimBtn.addEventListener("click", function () {
-      runPreviewTarget("dim");
+function openTool(toolName) {
+  fetch(getToolHtmlPath(toolName) + "?t=" + Date.now())
+    .then(function (res) {
+      return res.text();
+    })
+    .then(function (html) {
+      appView.innerHTML = html;
+      loadToolCss(toolName);
+
+      return loadToolJs(toolName);
+    })
+    .then(function () {
+      if (window.ToolPages && typeof window.ToolPages[toolName] === "function") {
+        window.ToolPages[toolName]({
+          goHome: renderHome
+        });
+      }
+    })
+    .catch(function (err) {
+      appView.innerHTML = `
+        <section class="tool-card">
+          <div class="tool-title">ERROR</div>
+          <div class="result-box">
+            <div class="result-line error">${String(err.message || err)}</div>
+          </div>
+        </section>
+      `;
     });
-  }
-
-  if (moveBtn) {
-    moveBtn.addEventListener("click", onMove);
-  }
-
-  if (resetBtn) {
-    resetBtn.addEventListener("click", onReset);
-  }
 }
 
-function init() {
-  initClampInputs();
-  initEvents();
- 
-}
+window.ToolPages = window.ToolPages || {};
 
-init();
-
+renderHome();

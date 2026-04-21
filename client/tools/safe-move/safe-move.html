@@ -1,0 +1,115 @@
+<header class="sub-header">
+  <button id="backHomeBtn" class="back-btn">← Quay lại</button>
+  <div>
+    <div class="sub-title">Safe Move</div>
+    <div class="sub-desc">Move object theo CMYK / Spot / Pantone</div>
+  </div>
+</header>
+
+<section class="status-card">
+  <div>
+    <div class="status-label">Trạng thái</div>
+    <div id="statusBadge" class="status-badge ready">Ready</div>
+  </div>
+  <div>
+    <div id="resultMode" class="result-mode">Idle</div>
+  </div>
+</section>
+
+<section class="tool-card">
+  <div class="tool-title">DIE CUT RULE</div>
+
+  <div class="rule-block">
+    <div class="field-group">
+      <label class="field-label">Fill</label>
+      <div class="cmyk-grid">
+        <div class="cmyk-item"><span class="cmyk-label c">C</span><input id="dieFillC" class="cmyk-input" type="number" min="0" max="100" step="0.1" placeholder="0"></div>
+        <div class="cmyk-item"><span class="cmyk-label m">M</span><input id="dieFillM" class="cmyk-input" type="number" min="0" max="100" step="0.1" placeholder="0"></div>
+        <div class="cmyk-item"><span class="cmyk-label y">Y</span><input id="dieFillY" class="cmyk-input" type="number" min="0" max="100" step="0.1" placeholder="0"></div>
+        <div class="cmyk-item"><span class="cmyk-label k">K</span><input id="dieFillK" class="cmyk-input" type="number" min="0" max="100" step="0.1" placeholder="0"></div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Stroke</label>
+      <div class="cmyk-grid">
+        <div class="cmyk-item"><span class="cmyk-label c">C</span><input id="dieStrokeC" class="cmyk-input" type="number" min="0" max="100" step="0.1" placeholder="0"></div>
+        <div class="cmyk-item"><span class="cmyk-label m">M</span><input id="dieStrokeM" class="cmyk-input" type="number" min="0" max="100" step="0.1" placeholder="0"></div>
+        <div class="cmyk-item"><span class="cmyk-label y">Y</span><input id="dieStrokeY" class="cmyk-input" type="number" min="0" max="100" step="0.1" placeholder="0"></div>
+        <div class="cmyk-item"><span class="cmyk-label k">K</span><input id="dieStrokeK" class="cmyk-input" type="number" min="0" max="100" step="0.1" placeholder="0"></div>
+      </div>
+    </div>
+
+    <div class="option-row">
+      <label class="option-item"><input type="checkbox" id="dieSpot"><span>Spot</span></label>
+      <label class="option-item"><input type="checkbox" id="diePantone"><span>Pantone</span></label>
+      <label class="option-item"><input type="checkbox" id="showDieLayer" checked><span>Show Layer</span></label>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Exclude List</label>
+      <textarea id="dieExclude" class="field-textarea" placeholder="Mỗi dòng một tên màu loại trừ"></textarea>
+    </div>
+  </div>
+</section>
+
+<section class="tool-card">
+  <div class="tool-title">DIMENSION RULE</div>
+
+  <div class="rule-block">
+    <div class="field-group">
+      <label class="field-label">Fill</label>
+      <div class="cmyk-grid">
+        <div class="cmyk-item"><span class="cmyk-label c">C</span><input id="dimFillC" class="cmyk-input" type="number" min="0" max="100" step="0.1" placeholder="0"></div>
+        <div class="cmyk-item"><span class="cmyk-label m">M</span><input id="dimFillM" class="cmyk-input" type="number" min="0" max="100" step="0.1" placeholder="0"></div>
+        <div class="cmyk-item"><span class="cmyk-label y">Y</span><input id="dimFillY" class="cmyk-input" type="number" min="0" max="100" step="0.1" placeholder="0"></div>
+        <div class="cmyk-item"><span class="cmyk-label k">K</span><input id="dimFillK" class="cmyk-input" type="number" min="0" max="100" step="0.1" placeholder="0"></div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Stroke</label>
+      <div class="cmyk-grid">
+        <div class="cmyk-item"><span class="cmyk-label c">C</span><input id="dimStrokeC" class="cmyk-input" type="number" min="0" max="100" step="0.1" placeholder="0"></div>
+        <div class="cmyk-item"><span class="cmyk-label m">M</span><input id="dimStrokeM" class="cmyk-input" type="number" min="0" max="100" step="0.1" placeholder="0"></div>
+        <div class="cmyk-item"><span class="cmyk-label y">Y</span><input id="dimStrokeY" class="cmyk-input" type="number" min="0" max="100" step="0.1" placeholder="0"></div>
+        <div class="cmyk-item"><span class="cmyk-label k">K</span><input id="dimStrokeK" class="cmyk-input" type="number" min="0" max="100" step="0.1" placeholder="0"></div>
+      </div>
+    </div>
+
+    <div class="option-row">
+      <label class="option-item"><input type="checkbox" id="dimSpot"><span>Spot</span></label>
+      <label class="option-item"><input type="checkbox" id="dimPantone"><span>Pantone</span></label>
+      <label class="option-item"><input type="checkbox" id="showDimLayer" checked><span>Show Layer</span></label>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Exclude List</label>
+      <textarea id="dimExclude" class="field-textarea" placeholder="Mỗi dòng một tên màu loại trừ"></textarea>
+    </div>
+  </div>
+</section>
+
+<section class="tool-card action-card">
+  <div class="tool-title">ACTION</div>
+
+  <div class="action-row triple">
+    <button id="previewDieBtn" class="action-btn preview-btn">Preview Die</button>
+    <button id="previewDimBtn" class="action-btn preview-btn alt">Preview Dim</button>
+    <button id="moveBtn" class="action-btn move-btn">Move All</button>
+  </div>
+
+  <div class="action-row secondary">
+    <button id="resetBtn" class="secondary-btn">Reset</button>
+  </div>
+</section>
+
+<section class="tool-card result-card">
+  <div class="result-header">
+    <div class="tool-title">RESULT</div>
+  </div>
+
+  <div id="resultBox" class="result-box">
+    <div class="result-line muted">Ready...</div>
+  </div>
+</section>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ExtensionManifest Version="7.0"
-    ExtensionBundleId="com.safemove.panel"
+    ExtensionBundleId="com.toolillustrator.panel"
     ExtensionBundleVersion="1.0.0"
     ExtensionBundleName="SAFE MOVE">
     <ExtensionList>
-        <Extension Id="com.safemove.panel.main"/>
+        <Extension Id="com.toolillustrator.panel.main"/>
     </ExtensionList>
     <ExecutionEnvironment>
         <HostList>
@@ -19,7 +19,7 @@
         </RequiredRuntimeList>
     </ExecutionEnvironment>
     <DispatchInfoList>
-        <Extension Id="com.safemove.panel.main">
+        <Extension Id="com.toolillustrator.panel.main">
             <DispatchInfo>
                 <Resources>
                     <MainPath>./client/index.html</MainPath>
@@ -32,7 +32,7 @@
                 </Lifecycle>
                 <UI>
                     <Type>Panel</Type>
-                    <Menu>SAFE MOVE</Menu>
+                    <Menu>Tool Illustrator</Menu>
                     <Geometry>
                         <Size>
                             <Width>380</Width>

@@ -1,6 +1,19 @@
-var cs = new CSInterface();
+var cs = null;
+
+try {
+    cs = new CSInterface();
+} catch (e) {
+    cs = null;
+}
 
 function evalJSX(script, callback) {
+    if (!cs) {
+        if (callback) {
+            callback('{"status":"error","message":"CSInterface chưa được load"}');
+        }
+        return;
+    }
+
     cs.evalScript(script, function (res) {
         if (callback) callback(res);
     });
@@ -15,16 +28,24 @@ function escapeForJSX(text) {
 }
 
 function getExtensionPath() {
+    if (!cs) {
+        throw new Error("CSInterface chưa sẵn sàng");
+    }
+
+    if (typeof SystemPath === "undefined") {
+        throw new Error("SystemPath chưa tồn tại");
+    }
+
     return cs.getSystemPath(SystemPath.EXTENSION).replace(/\\/g, "/");
 }
 
-function runPreview(payload) {
+function runSafeMovePreview(payload) {
     var json = escapeForJSX(JSON.stringify(payload));
     var extPath = getExtensionPath();
 
     var script =
-        '$.evalFile("' + extPath + '/jsx/core.jsx");' +
-        '$.evalFile("' + extPath + '/jsx/preview.jsx");' +
+        '$.evalFile("' + extPath + '/jsx/safe-move/core.jsx");' +
+        '$.evalFile("' + extPath + '/jsx/safe-move/preview.jsx");' +
         'runPreview("' + json + '");';
 
     return new Promise(function (resolve) {
@@ -38,13 +59,13 @@ function runPreview(payload) {
     });
 }
 
-function runMove(payload) {
+function runSafeMove(payload) {
     var json = escapeForJSX(JSON.stringify(payload));
     var extPath = getExtensionPath();
 
     var script =
-        '$.evalFile("' + extPath + '/jsx/core.jsx");' +
-        '$.evalFile("' + extPath + '/jsx/move.jsx");' +
+        '$.evalFile("' + extPath + '/jsx/safe-move/core.jsx");' +
+        '$.evalFile("' + extPath + '/jsx/safe-move/move.jsx");' +
         'runMovePanel("' + json + '");';
 
     return new Promise(function (resolve) {
