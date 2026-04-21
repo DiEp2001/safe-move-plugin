@@ -376,35 +376,3 @@
   .result-line.info {
     color: #9ddfff;
   }
-  .update-banner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  background: rgba(255, 179, 0, 0.12);
-  border: 1px solid rgba(255, 179, 0, 0.3);
-  color: #ffe08a;
-  border-radius: 12px;
-  padding: 10px 12px;
-  margin-bottom: 12px;
-}
-
-.update-banner.hidden {
-  display: none;
-}
-
-.update-text {
-  font-size: 12px;
-  color: #f5d98b;
-  margin-top: 4px;
-}
-
-.update-btn {
-  display: inline-block;
-  text-decoration: none;
-  background: #ffb300;
-  color: #111;
-  padding: 8px 12px;
-  border-radius: 10px;
-  font-weight: 700;
-}

@@ -305,54 +305,8 @@ function initEvents() {
 function init() {
   initClampInputs();
   initEvents();
-  checkForUpdates();
+ 
 }
 
 init();
 
-function compareVersion(a, b) {
-  var pa = String(a).split(".");
-  var pb = String(b).split(".");
-  var len = Math.max(pa.length, pb.length);
-
-  for (var i = 0; i < len; i++) {
-    var na = parseInt(pa[i] || "0", 10);
-    var nb = parseInt(pb[i] || "0", 10);
-
-    if (na > nb) return 1;
-    if (na < nb) return -1;
-  }
-
-  return 0;
-}
-
-function showUpdateBanner(info) {
-  var banner = getEl("updateBanner");
-  var text = getEl("updateText");
-  var link = getEl("updateLink");
-
-  if (!banner || !text || !link) return;
-
-  text.textContent = "Bản mới: " + info.version + (info.notes ? " — " + info.notes : "");
-  link.href = info.downloadUrl || "#";
-  banner.classList.remove("hidden");
-}
-
-function checkForUpdates() {
-  var url = "https://raw.githubusercontent.com/DiEp2001/safe-move-plugin/main/version.json";
-
-  fetch(url + "?t=" + Date.now())
-    .then(function (res) {
-      return res.json();
-    })
-    .then(function (data) {
-      if (!data || !data.version) return;
-
-      if (compareVersion(data.version, CURRENT_VERSION) > 0) {
-        showUpdateBanner(data);
-      }
-    })
-    .catch(function () {
-      // fail silently
-    });
-}
