@@ -326,6 +326,109 @@ function getOrCreateLayer(name) {
     return layer;
 }
 
+function getAllLayers(doc) {
+    var arr = [];
+
+    function walk(layers) {
+        for (var i = 0; i < layers.length; i++) {
+            var layer = layers[i];
+            arr.push(layer);
+
+            try {
+                if (layer.layers && layer.layers.length > 0) {
+                    walk(layer.layers);
+                }
+            } catch (e) {}
+        }
+    }
+
+    walk(doc.layers);
+    return arr;
+}
+
+function collectEditableContainers(item, includeItem) {
+    var arr = [];
+    var current = includeItem ? item : item ? item.parent : null;
+
+    while (current && current.typename !== "Document") {
+        arr.push(current);
+
+        try {
+            current = current.parent;
+        } catch (e) {
+            current = null;
+        }
+    }
+
+    return arr;
+}
+
+function unlockAndShowContainers(items) {
+    var snapshots = [];
+
+    for (var i = 0; i < items.length; i++) {
+        var target = items[i];
+        if (!target) continue;
+
+        var state = {
+            target: target,
+            hidden: null,
+            visible: null,
+            locked: null
+        };
+
+        try {
+            if (typeof target.hidden !== "undefined") {
+                state.hidden = target.hidden;
+                if (target.hidden) target.hidden = false;
+            }
+        } catch (e) {}
+
+        try {
+            if (typeof target.visible !== "undefined") {
+                state.visible = target.visible;
+                if (!target.visible) target.visible = true;
+            }
+        } catch (e) {}
+
+        try {
+            if (typeof target.locked !== "undefined") {
+                state.locked = target.locked;
+                if (target.locked) target.locked = false;
+            }
+        } catch (e) {}
+
+        snapshots.push(state);
+    }
+
+    return snapshots;
+}
+
+function restoreContainerStates(snapshots) {
+    for (var i = snapshots.length - 1; i >= 0; i--) {
+        var state = snapshots[i];
+        if (!state || !state.target) continue;
+
+        try {
+            if (state.locked !== null && typeof state.target.locked !== "undefined") {
+                state.target.locked = state.locked;
+            }
+        } catch (e) {}
+
+        try {
+            if (state.hidden !== null && typeof state.target.hidden !== "undefined") {
+                state.target.hidden = state.hidden;
+            }
+        } catch (e) {}
+
+        try {
+            if (state.visible !== null && typeof state.target.visible !== "undefined") {
+                state.target.visible = state.visible;
+            }
+        } catch (e) {}
+    }
+}
+
 // -------------------------
 // MOVE
 // -------------------------
@@ -335,6 +438,7 @@ function runMove(dieRule, dimRule, options) {
 
     var dieLayer = getOrCreateLayer(options.dieLayerName || "Die Cut");
     var dimLayer = getOrCreateLayer(options.dimLayerName || "Dimension");
+    var allLayerStates = unlockAndShowContainers(getAllLayers(doc));
 
     var dieCount = 0;
     var dimCount = 0;
@@ -344,17 +448,29 @@ function runMove(dieRule, dimRule, options) {
 
         try {
             if (hasMatchDeep(item, dieRule)) {
-                item.move(dieLayer, ElementPlacement.PLACEATBEGINNING);
+                var dieSourceState = unlockAndShowContainers(collectEditableContainers(item, true));
+                try {
+                    item.move(dieLayer, ElementPlacement.PLACEATBEGINNING);
+                } finally {
+                    restoreContainerStates(dieSourceState);
+                }
                 dieCount++;
                 continue;
             }
 
             if (hasMatchDeep(item, dimRule)) {
-                item.move(dimLayer, ElementPlacement.PLACEATBEGINNING);
+                var dimSourceState = unlockAndShowContainers(collectEditableContainers(item, true));
+                try {
+                    item.move(dimLayer, ElementPlacement.PLACEATBEGINNING);
+                } finally {
+                    restoreContainerStates(dimSourceState);
+                }
                 dimCount++;
             }
         } catch (e) {}
     }
+
+    restoreContainerStates(allLayerStates);
 
     try {
         dieLayer.visible = options.showDieLayer !== false;

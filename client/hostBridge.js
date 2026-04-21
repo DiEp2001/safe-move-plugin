@@ -78,3 +78,23 @@ function runSafeMove(payload) {
         });
     });
 }
+
+function runBlackCheck(payload) {
+    var json = escapeForJSX(JSON.stringify(payload));
+    var extPath = getExtensionPath();
+
+    var script =
+        '$.evalFile("' + extPath + '/jsx/check-black-4c/core.jsx");' +
+        '$.evalFile("' + extPath + '/jsx/check-black-4c/scan.jsx");' +
+        'runBlackCheckPanel("' + json + '");';
+
+    return new Promise(function (resolve) {
+        evalJSX(script, function (res) {
+            try {
+                resolve(JSON.parse(res));
+            } catch (e) {
+                resolve({ status: "error", message: res });
+            }
+        });
+    });
+}

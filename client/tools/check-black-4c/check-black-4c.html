@@ -1,0 +1,74 @@
+<header class="sub-header">
+  <button id="backHomeBtn" class="back-btn"><- Quay lai</button>
+  <div>
+    <div class="sub-title">Check Black 4C</div>
+    <div class="sub-desc">Kiem tra object den bi pha C, M, Y cung voi K</div>
+  </div>
+</header>
+
+<section class="status-card">
+  <div>
+    <div class="status-label">Trang thai</div>
+    <div id="statusBadge" class="status-badge ready">Ready</div>
+  </div>
+  <div>
+    <div id="resultMode" class="result-mode">Idle</div>
+  </div>
+</section>
+
+<section class="tool-card">
+  <div class="tool-title">CHECK RULE</div>
+
+  <div class="rule-block">
+    <div class="field-grid">
+      <div class="field-group">
+        <label class="field-label" for="minKInput">Min K</label>
+        <input id="minKInput" class="number-input" type="number" min="0" max="100" step="0.1" value="80">
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="minCMYInput">Min C/M/Y</label>
+        <input id="minCMYInput" class="number-input" type="number" min="0" max="100" step="0.1" value="0.1">
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="neutralToleranceInput">Neutral Tol</label>
+        <input id="neutralToleranceInput" class="number-input" type="number" min="0" max="100" step="0.1" value="15">
+      </div>
+    </div>
+
+    <div class="option-row">
+      <label class="option-item"><input type="checkbox" id="checkFill" checked><span>Check Fill</span></label>
+      <label class="option-item"><input type="checkbox" id="checkStroke" checked><span>Check Stroke</span></label>
+      <label class="option-item"><input type="checkbox" id="includeSpot"><span>Include Spot CMYK</span></label>
+    </div>
+
+    <div class="note-box">
+      Chi bat mau gan den: K vuot nguong, co them C/M/Y, va do lech giua cac kenh C-M-Y khong vuot qua Neutral Tol.
+    </div>
+  </div>
+</section>
+
+<section class="tool-card action-card">
+  <div class="tool-title">ACTION</div>
+
+  <div class="action-row triple">
+    <button id="scanBtn" class="action-btn scan-btn">Scan</button>
+    <button id="previewBtn" class="action-btn preview-btn">Preview</button>
+    <button id="clearSelectionBtn" class="action-btn neutral-btn">Clear Select</button>
+  </div>
+
+  <div class="action-row secondary">
+    <button id="resetBtn" class="secondary-btn">Reset</button>
+  </div>
+</section>
+
+<section class="tool-card result-card">
+  <div class="result-header">
+    <div class="tool-title">RESULT</div>
+  </div>
+
+  <div id="resultBox" class="result-box">
+    <div class="result-line muted">Ready...</div>
+  </div>
+</section>

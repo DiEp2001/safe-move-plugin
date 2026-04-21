@@ -43,7 +43,7 @@ function loadToolJs(toolName) {
       resolve();
     };
     script.onerror = function () {
-      reject(new Error("Không load được JS của tool: " + toolName));
+      reject(new Error("Khong load duoc JS cua tool: " + toolName));
     };
     document.body.appendChild(script);
   });
@@ -66,7 +66,7 @@ function renderHome() {
         <div class="hero-overlay">
           <div class="hero-title">Tool Illustrator</div>
           <div class="hero-desc">
-            Chọn chức năng để mở công cụ tương ứng.
+            Chon chuc nang de mo cong cu tuong ung.
           </div>
         </div>
       </div>
@@ -78,26 +78,34 @@ function renderHome() {
       <div class="tool-menu">
         <button id="openSafeMoveBtn" class="menu-tool-btn">
           <div class="menu-tool-title">Safe Move</div>
-          <div class="menu-tool-desc">Preview và move object theo màu sang Die Cut / Dimension</div>
+          <div class="menu-tool-desc">Preview va move object theo mau sang Die Cut / Dimension</div>
         </button>
 
-        <button class="menu-tool-btn disabled" disabled>
-          <div class="menu-tool-title">Color Scan</div>
-          <div class="menu-tool-desc">Sắp thêm</div>
+        <button id="openBlackCheckBtn" class="menu-tool-btn">
+          <div class="menu-tool-title">Check Black 4C</div>
+          <div class="menu-tool-desc">Kiem tra object den bi pha 4 mau va preview nhanh trong file</div>
         </button>
 
         <button class="menu-tool-btn disabled" disabled>
           <div class="menu-tool-title">Layer Utility</div>
-          <div class="menu-tool-desc">Sắp thêm</div>
+          <div class="menu-tool-desc">Sap them</div>
         </button>
       </div>
     </section>
   `;
 
   var openSafeMoveBtn = document.getElementById("openSafeMoveBtn");
+  var openBlackCheckBtn = document.getElementById("openBlackCheckBtn");
+
   if (openSafeMoveBtn) {
     openSafeMoveBtn.addEventListener("click", function () {
       openTool("safe-move");
+    });
+  }
+
+  if (openBlackCheckBtn) {
+    openBlackCheckBtn.addEventListener("click", function () {
+      openTool("check-black-4c");
     });
   }
 }
