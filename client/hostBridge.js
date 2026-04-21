@@ -98,3 +98,43 @@ function runBlackCheck(payload) {
         });
     });
 }
+
+function runGangPdfAnalyze(payload) {
+    var json = escapeForJSX(JSON.stringify(payload));
+    var extPath = getExtensionPath();
+
+    var script =
+        '$.evalFile("' + extPath + '/jsx/gang-pdf/core.jsx");' +
+        '$.evalFile("' + extPath + '/jsx/gang-pdf/panel.jsx");' +
+        'runGangPdfAnalyze("' + json + '");';
+
+    return new Promise(function (resolve) {
+        evalJSX(script, function (res) {
+            try {
+                resolve(JSON.parse(res));
+            } catch (e) {
+                resolve({ status: "error", message: res });
+            }
+        });
+    });
+}
+
+function runGangPdfLayout(payload) {
+    var json = escapeForJSX(JSON.stringify(payload));
+    var extPath = getExtensionPath();
+
+    var script =
+        '$.evalFile("' + extPath + '/jsx/gang-pdf/core.jsx");' +
+        '$.evalFile("' + extPath + '/jsx/gang-pdf/panel.jsx");' +
+        'runGangPdfLayout("' + json + '");';
+
+    return new Promise(function (resolve) {
+        evalJSX(script, function (res) {
+            try {
+                resolve(JSON.parse(res));
+            } catch (e) {
+                resolve({ status: "error", message: res });
+            }
+        });
+    });
+}

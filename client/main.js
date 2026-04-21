@@ -76,6 +76,11 @@ function renderHome() {
       <div class="tool-title">TOOLS</div>
 
       <div class="tool-menu">
+        <button id="openGangPdfBtn" class="menu-tool-btn">
+          <div class="menu-tool-title">Gang PDF</div>
+          <div class="menu-tool-desc">Ghep nhieu file PDF len sheet, tinh so con va place that len artboard</div>
+        </button>
+
         <button id="openSafeMoveBtn" class="menu-tool-btn">
           <div class="menu-tool-title">Safe Move</div>
           <div class="menu-tool-desc">Preview va move object theo mau sang Die Cut / Dimension</div>
@@ -94,8 +99,15 @@ function renderHome() {
     </section>
   `;
 
+  var openGangPdfBtn = document.getElementById("openGangPdfBtn");
   var openSafeMoveBtn = document.getElementById("openSafeMoveBtn");
   var openBlackCheckBtn = document.getElementById("openBlackCheckBtn");
+
+  if (openGangPdfBtn) {
+    openGangPdfBtn.addEventListener("click", function () {
+      openTool("gang-pdf");
+    });
+  }
 
   if (openSafeMoveBtn) {
     openSafeMoveBtn.addEventListener("click", function () {

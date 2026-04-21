@@ -1,0 +1,106 @@
+<header class="sub-header">
+  <button id="backHomeBtn" class="back-btn"><- Quay lai</button>
+  <div>
+    <div class="sub-title">Gang PDF</div>
+    <div class="sub-desc">Chon nhieu PDF, nhap so luong va xep that len sheet theo trim box</div>
+  </div>
+</header>
+
+<section class="status-card">
+  <div>
+    <div class="status-label">Trang thai</div>
+    <div id="statusBadge" class="status-badge ready">Ready</div>
+  </div>
+  <div>
+    <div id="resultMode" class="result-mode">Idle</div>
+  </div>
+</section>
+
+<section class="tool-card">
+  <div class="tool-title">FILES</div>
+
+  <div class="file-toolbar">
+    <button id="pickPdfBtn" class="action-btn pick-btn">Chon PDF</button>
+    <button id="clearFilesBtn" class="secondary-btn small-btn">Xoa danh sach</button>
+    <input id="pdfInput" class="hidden-input" type="file" accept=".pdf,application/pdf" multiple>
+  </div>
+
+  <div id="fileSummary" class="note-box">Chua co file nao.</div>
+  <div id="fileList" class="file-list empty">Hay chon file PDF de bat dau.</div>
+</section>
+
+<section class="tool-card">
+  <div class="tool-title">SHEET SETUP</div>
+
+  <div class="field-grid four-col">
+    <div class="field-group">
+      <label class="field-label" for="sheetWidthInput">Sheet W (mm)</label>
+      <input id="sheetWidthInput" class="number-input" type="number" min="1" step="0.1" value="430">
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="sheetHeightInput">Sheet H (mm)</label>
+      <input id="sheetHeightInput" class="number-input" type="number" min="1" step="0.1" value="320">
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="gapXInput">Gap X (mm)</label>
+      <input id="gapXInput" class="number-input" type="number" min="0" step="0.1" value="3">
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="gapYInput">Gap Y (mm)</label>
+      <input id="gapYInput" class="number-input" type="number" min="0" step="0.1" value="3">
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="marginTopInput">Margin T (mm)</label>
+      <input id="marginTopInput" class="number-input" type="number" min="0" step="0.1" value="10">
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="marginRightInput">Margin R (mm)</label>
+      <input id="marginRightInput" class="number-input" type="number" min="0" step="0.1" value="10">
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="marginBottomInput">Margin B (mm)</label>
+      <input id="marginBottomInput" class="number-input" type="number" min="0" step="0.1" value="10">
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="marginLeftInput">Margin L (mm)</label>
+      <input id="marginLeftInput" class="number-input" type="number" min="0" step="0.1" value="10">
+    </div>
+  </div>
+
+  <div class="option-row">
+    <label class="option-item"><input type="checkbox" id="allowRotate" checked><span>Auto Rotate</span></label>
+    <label class="option-item"><input type="checkbox" id="addCropMarks" checked><span>Bon Cat</span></label>
+    <label class="option-item"><input type="checkbox" id="addRegistrationMarks" checked><span>Registration</span></label>
+  </div>
+
+  <div class="note-box">
+    Tool lay kich thuoc theo trim box cua PDF, sau do tinh va place that len artboard.
+  </div>
+</section>
+
+<section class="tool-card action-card">
+  <div class="tool-title">ACTION</div>
+
+  <div class="action-row triple">
+    <button id="analyzeBtn" class="action-btn analyze-btn">Analyze</button>
+    <button id="makeLayoutBtn" class="action-btn layout-btn">Make Layout</button>
+    <button id="resetBtn" class="secondary-btn">Reset</button>
+  </div>
+</section>
+
+<section class="tool-card result-card">
+  <div class="result-header">
+    <div class="tool-title">RESULT</div>
+  </div>
+
+  <div id="resultBox" class="result-box">
+    <div class="result-line muted">Ready...</div>
+  </div>
+</section>
